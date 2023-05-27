@@ -6,12 +6,17 @@ import whisper
 model = whisper.load_model("large") # Change this to your desired model (large)
 print("Whisper model loaded.")
 
-def transcribe_audio(file):
-    file_path = f"audio_only/{file}"
-    transcribe = model.transcribe(audio=file_path, verbose=True, task='translate')
+def transcribe_audio(file_path):
+    transcribe = model.transcribe(audio=file_path,
+                                  verbose=True,
+                                  patience=2,
+                                  beam_size=5,
+                                  language="Hindi",
+                                  task='translate')
     segments = transcribe['segments']
-    
-    output_file_name = file.split(".")[0]
+
+    output_file_name = file_path.split(".")[:-1]
+    output_file_name = '.'.join(output_file_name)
     srtFilename = f"{output_file_name}.srt"
     print(srtFilename)
     
@@ -34,8 +39,7 @@ def transcribe_audio(file):
 
     return srtFilename
 
-file = input("Enter file name: ")
-
+file = input("input file name")
 print("Currently transcribing:", file)
-print("__________________________________________")
 print(transcribe_audio(file))
+print("__________________________________________")
